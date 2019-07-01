@@ -1,6 +1,6 @@
 require('dotenv').config()
 const fetch = require('node-fetch')
-const { whoAmI, printAll } = require('./utils')
+const { whoAmI, printAll, writeCache, readCache } = require('./utils')
 
 const BASE_PATH = process.env.BASE_PATH 
 
@@ -10,6 +10,7 @@ const mapResult = (result) => {
     year: result.year,
     id: result.id,
     status: result.status,
+    type: result.type,
     date: result.date
   }
 }
@@ -25,6 +26,7 @@ function fetchRequestMedia() {
       const { results, total_results } = {...result}
 
       const media = results.map(mapResult)
+      // console.log('requested: ', media)
       return media
     })
 }
@@ -37,12 +39,22 @@ function fetchReleases(media) {
       }
     })
     .then(resp => resp.json())
+//    .then(resp => { writeToFile(resp); return resp })
     .then(result => {
       const { results } = { ...result }
       console.log(`Releases for ${media.title} returned: ${results.length}`)
-      return results ? {catch: media, release: results } : null 
+      return results ? {media: media, release: results } : null 
     })
     .catch(console.error)
+
+}
+
+function seasonedReleases(release) {
+  const { media, releases } = release
+  console.log(media.title)
+  if (releases)
+    console.log(releases[0])
+  console.log()
 
 }
 
@@ -64,7 +76,11 @@ async function Release(media) {
 function main() {
   console.info("👋🎣 lets do some fetch-and-releasin'\n")
 
-  Fetch().then(Release)
+  fetchRequestMedia()
+    .then(media => Promise.all(media.map(fetchReleases)))
+    .then(async(releases) => releases.map(await writeCache))
+//  readCache()
+//    .then(releases => releases.filter(seasonedReleases))
 }
 
 
