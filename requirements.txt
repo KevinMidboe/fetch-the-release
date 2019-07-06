@@ -1,0 +1,2 @@
+requests>=2.22.0
+redis>=3.2.1
