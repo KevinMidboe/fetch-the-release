@@ -2,7 +2,7 @@ require('dotenv').config()
 const fetch = require('node-fetch')
 const { whoAmI, printAll, writeCache, readCache } = require('./utils')
 
-const BASE_PATH = process.env.BASE_PATH 
+const BASE_URL = process.env.BASE_URL
 
 const mapResult = (result) => {
   return {
@@ -20,7 +20,7 @@ const undownloaded = (media) => {
 }
 
 function fetchRequestMedia() {
-  return fetch(`${BASE_PATH}/v2/request?page=1`)
+  return fetch(`${BASE_URL}/v2/request?page=1`)
     .then(resp => resp.json())
     .then(result => {
       const { results, total_results } = {...result}
@@ -32,7 +32,7 @@ function fetchRequestMedia() {
 }
 
 function fetchReleases(media) {
-  const url = encodeURI(`${BASE_PATH}/v1/pirate/search?query=${media.title}`)
+  const url = encodeURI(`${BASE_URL}/v1/pirate/search?query=${media.title}`)
   return fetch(url, {
       headers: { 
         'Authorization': process.env.AUTHORIZATION 
