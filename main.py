@@ -15,8 +15,8 @@ AUTHORIZATION_TOKEN = os.getenv('AUTHORIZATION_TOKEN') or None
 CACHE = Redis(host='localhost', port=6379, db=0)
 
 
-USER = os.getenv('USER') or None
-PASS = os.getenv('PASS') or None 
+USER = os.getenv('SEASONED_USER') or None
+PASS = os.getenv('SEASONED_PASS') or None
 
 if None in [BASE_URL, USER, PASS]:
     print('ERROR! Set environment variables, see ./.env-example or README')
